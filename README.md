@@ -1,15 +1,7 @@
 # Laboratorio Software Avanzado
-## Práctica 3
+## Práctica 4
 
-Esta práctica consiste en la coreografía de microservicios. 
-Se han desarrollado 3 micro servicios que están orquestados entre sí para proveer un servicio completo. 
-
-
-Los tres micro servicios han sido desarrollados a través de:
-
--Node js 12
-
--Express Framework
+En esta práctica se ha agregado un ESB a la coreografía de los servicios de la práctica #3.
 
 
 ## Micro servicio Cliente
