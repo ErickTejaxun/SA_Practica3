@@ -8,7 +8,7 @@ const app = express();
 var PORTRESTAURANTE = 5000;
 var PORTREPARTIDOR = 5500;
 var pedidos = [];
-
+var contadorPedido = 0;
 
 /**
  * 
@@ -22,7 +22,7 @@ var avisarRepartidor = function(codigo)
 
     var options = 
     {
-        uri: 'http://'+host+ path,
+        uri: 'http://'+host+':'+port+path,        
         form:
         {
             codigo: codigo,            
@@ -41,10 +41,38 @@ var avisarRepartidor = function(codigo)
         else
         {
             console.error('Peticion HTTP exitosa\t'+err);
+            console.log(body);
         }
     });
 
 }
+
+
+async function simularPreparacionPedido(pedido)
+{
+    console.log('El pedido '+pedido.codigo+ '. Estado: '+pedido.status);
+    var contador = 0;
+    while(contador<3)
+    {
+        var resultado = await simularTiempos();      
+        console.log('El pedido '+pedido.codigo+ '. Estado: '+pedido.status);  
+        contador++;        
+    }   
+    avisarRepartidor(pedido.codigo);
+}
+
+
+function simularTiempos()
+{
+    return new Promise(resolve=>
+        {
+            setTimeout(() => {
+                resolve(true);
+            } , 2000 );
+        
+    });
+}
+
 
 
 class pedido
@@ -53,7 +81,7 @@ class pedido
     {
         this.codigoUsuario = codigoUsuario;
         this.detalle = [];
-        this.date = new Date.now();
+        this.date =  Date.now();
         this.status = 'En espera';
         this.codigo = codigo;
     }
@@ -75,6 +103,7 @@ class pedido
             break;
         }
     }
+
 
     setPreparando()
     { 
@@ -107,6 +136,14 @@ class Detalle
         this.cantidad = cant;
     }
 }
+
+var pedidoInicial = new pedido('PD001',0);
+pedidoInicial.addDetail(new Detalle('BD001',20));
+
+var pedido2 = new pedido('PD002',1);
+pedido2.addDetail(new Detalle('BD002',20));
+pedidos.push(pedidoInicial);
+pedidos.push(pedido2);
 
 
 var productos = 
@@ -240,19 +277,39 @@ app.post('/pedido/make', (req, res)=>
 
 app.post('/pedido/status', (req,res)=>
 {
-    var idPedido = req.params.id;
+    //var idPedido = req.params.codigo;
+    var idPedido = contadorPedido;
     var pedido = pedidos[idPedido];
-    if(pedido!=null)
+    var encontrado = false;
+    console.log(idPedido);
+
+    Object.keys(pedidos).map((item)=>
     {
-        return res.json
-        (
-            {
-                "id":idPedido,
-                "status": pedido.status
-            }
-        );
+        var ped = pedidos[item];
+        //console.log(ped.codigo +'=='+ idPedido);        
+        if(ped.codigo == idPedido)
+        {
+            ped.actualizarStatus();
+            console.log("Se ha actualizado el estado del pedido "+ped.codigo);
+            encontrado = true;
+            return res.json
+            (
+                {
+                    "id":idPedido,
+                    "status": pedido.status
+                }
+            );            
+        }
+
+    });
+
+    if(!encontrado)
+    {
+        var mensaje = 'No se ha encontrado el pedido solicitado.';
+        console.log(mensaje);
+        return res.send(mensaje);
     }
-    return res.send('No se ha encontrado el pedido solicitado.');
+
 });
 
 app.post('/pedido/update', (req,res)=>
@@ -280,5 +337,5 @@ app.post('/pedido/update', (req,res)=>
 //app.listen(process.env.PORTRESTAURANTE, ()=>)
 app.listen(PORTRESTAURANTE,()=>
 {
-    console.log('Iniciando micro servicio restuarante');
+    console.log('Iniciando micro servicio restuarante. En el puerto '+PORTRESTAURANTE );
 });
