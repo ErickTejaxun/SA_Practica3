@@ -26,6 +26,7 @@ async function simularEntregaPedidos(codigo)
     console.log("----------------------El pedido "+codigo+" ha sido entregado.-----------");
     pedidos.pop();
     actualizarEstado(codigo);
+    notificarCliente(codigo);
 
 }
 
@@ -49,7 +50,7 @@ var actualizarEstado = function(codigo)
 {
     var host = 'localhost';
     var port = PORTRESTAURANTE;
-    var path = '/pedido/status';
+    var path = '/pedido/status/close/'+codigo;
 
     var options = 
     {
@@ -64,15 +65,15 @@ var actualizarEstado = function(codigo)
     /*
     Ahora enviamos la petición post
      */    
-    var req = request.post( options, (err, res, body)=>
+    var req = request.get( options, (err, res, body)=>
     {
         if(err)
         {
-            console.error('Peticion HTTP fallida\t'+err);
+            console.error('Peticion HTTP hacia el restaurante fallida\t'+err);
         }
         else
         {
-            console.error('Peticion HTTP exitosa\t'+body);            
+            console.error('Peticion HTTP hacia el restaurante exitosa\t'+body);            
         }
     });
 
@@ -81,8 +82,42 @@ var actualizarEstado = function(codigo)
 
 
 
+var notificarCliente = function(codigo)
+{
+    var host = 'localhost';
+    var port = PORTCLIENTE;
+    var path = '/pedido/notificacion/'+codigo;
+
+    var options = 
+    {
+        uri: 'http://'+host+':'+port+path,        
+        form:
+        {
+            codigo: codigo,            
+        },
+        body:    "codigo="+codigo
+    };
+
+    /*
+    Ahora enviamos la petición post
+     */    
+    var req = request.get( options, (err, res, body)=>
+    {
+        if(err)
+        {
+            console.error('Peticion HTTP hacia el cliente fallida\t'+err);
+        }
+        else
+        {
+            console.error('Peticion HTTP hacia el cliente exitosa\t'+body);            
+        }
+    });
+
+}
+
+
 //var path = '/pedido/recoger';
-app.get('/pedido/recoger/:codigo', (req, res)=>
+app.post('/pedido/recoger', (req, res)=>
 {
     var codigo = req.params.codigo; 
     pedidos.push(codigo);

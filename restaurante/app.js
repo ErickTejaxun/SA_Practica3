@@ -26,6 +26,7 @@ var avisarRepartidor = function(codigo)
         form:
         {
             codigo: codigo,            
+            id: codigo,  
         }
     };
 
@@ -48,13 +49,27 @@ var avisarRepartidor = function(codigo)
 }
 
 
-async function simularPreparacionPedido(pedido)
+async function simularPreparacionPedido(codigo)
 {
+
+    var pedido = pedidos[0];
+    Object.keys(pedidos).map((item)=>
+    {
+        var ped = pedidos[item];
+        //console.log(ped.codigo +'=='+ idPedido);        
+        if(ped.codigo == codigo)
+        {
+            pedido =   ped;                     
+        }
+
+    });
+
     console.log('El pedido '+pedido.codigo+ '. Estado: '+pedido.status);
     var contador = 0;
     while(contador<3)
     {
-        var resultado = await simularTiempos();      
+        var resultado = await simularTiempos();    
+        pedido.actualizarStatus();  
         console.log('El pedido '+pedido.codigo+ '. Estado: '+pedido.status);  
         contador++;        
     }   
@@ -94,11 +109,11 @@ class pedido
                 this.setPreparando();
             break;
             
-            case 'En preparacion':
+            case 'En preparación':
                 this.setEnviado();
             break;
 
-            case 'En preparacion':
+            case 'Enviado, en camino':
                 this.setEntregado();
             break;
         }
@@ -113,7 +128,7 @@ class pedido
     setEnviado()
     {
         this.status = 'Enviado, en camino';
-        avisarRepartidor(this.codigo);
+        //avisarRepartidor(this.codigo);
     }
 
     setEntregado()
@@ -264,13 +279,14 @@ app.get('/obtener/:id', (req, res)=>
     
 });
 
-app.post('/pedido/make', (req, res)=>
+app.get('/pedido/:pedido', (req, res)=>
 {
     var pedido = req.params.pedido;
     console.log(pedido);
     if(pedido!=null)
     {
         pedidos.push(pedido);
+        simularPreparacionPedido(pedido);
     }
     return res.json(restaurantes);
 });
@@ -281,16 +297,16 @@ app.post('/pedido/status', (req,res)=>
     var idPedido = contadorPedido;
     var pedido = pedidos[idPedido];
     var encontrado = false;
-    console.log(idPedido);
+    //console.log(idPedido);
 
     Object.keys(pedidos).map((item)=>
     {
         var ped = pedidos[item];
         //console.log(ped.codigo +'=='+ idPedido);        
         if(ped.codigo == idPedido)
-        {
-            ped.actualizarStatus();
-            console.log("Se ha actualizado el estado del pedido "+ped.codigo);
+        {            
+            ped.actualizarStatus();        
+            console.log("Se ha actualizado el estado del pedido "+ped.codigo + ' al estado '+ped.status);
             encontrado = true;
             return res.json
             (
@@ -309,8 +325,16 @@ app.post('/pedido/status', (req,res)=>
         console.log(mensaje);
         return res.send(mensaje);
     }
-
 });
+
+
+app.get('/pedido/status/close/:codigo', (req,res)=>
+{
+    var mensaje = 'El pedido ' +req.params.codigo+' ha sido completado';
+    console.log(mensaje);
+    //res.send(mensaje);
+});
+
 
 app.post('/pedido/update', (req,res)=>
 {
