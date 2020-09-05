@@ -4,6 +4,21 @@
 En esta práctica se ha agregado un ESB a la coreografía de los servicios de la práctica #3.
 
 
+## ESB
+El ESB funciona como intermediario para la comunicación entre todos los microservicios. Está en la carpeta esb.
+
+Para instalar las librerías necesarias:
+```bash
+yarn install package.json
+```
+
+Para ejecutar 
+
+```bash
+node app.js
+```
+
+
 ## Micro servicio Cliente
 Este micro servicio sirve como interfaz para el usuario. 
 
