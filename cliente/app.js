@@ -154,7 +154,7 @@ var actualizarEstado = function(codigo)
         }
         else
         {
-            console.error('Peticion HTTP exitosa\t'+body);            
+            console.error('Peticion HTTP exitosa\t');            
         }
     });
 
@@ -204,10 +204,10 @@ var enviarPedidoRestaurante = function(codigo)
 
 app.get('/pedido/:codigo', (req, res)=>
 {
-    var codigo = req.params.codigo;
-    enviarPedidoRestaurante(codigo);
-    var mensaje = "Se ha comenzado su pedido\n";
+    var codigo = req.params.codigo;    
+    var mensaje = "\n---------------------\nSe ha comenzado su pedido el pedido: " + codigo+ ".\n---------------------\n";    
     console.log(mensaje);
+    enviarPedidoRestaurante(codigo);    
     res.send(mensaje);
 });
 

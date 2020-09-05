@@ -26,8 +26,8 @@ async function simularEntregaPedidos(codigo)
     }
     console.log("----------------------El pedido "+codigo+" ha sido entregado.-----------");
     pedidos.pop();
-    actualizarEstado(codigo);
-    notificarCliente(codigo);
+    notificarEntregaRestaurante(codigo);
+    notificarEntregaCliente(codigo);
 
 }
 
@@ -47,11 +47,11 @@ function simularTiempoEntrega()
  * 
  * @param {*} codigo del pedido
  */
-var actualizarEstado = function(codigo)
+var notificarEntregaRestaurante = function(codigo)
 {
     var host = 'localhost';
-    var port = PORTRESTAURANTE;
-    var path = '/pedido/status/close/'+codigo;
+    var port = PORTEBS;
+    var path = '/restaurante/pedido/status/close/'+codigo;
 
     var options = 
     {
@@ -74,7 +74,7 @@ var actualizarEstado = function(codigo)
         }
         else
         {
-            console.error('Peticion HTTP hacia el restaurante exitosa\t'+body);            
+            console.error('Peticion HTTP hacia el restaurante exitosa\t');            
         }
     });
 
@@ -83,11 +83,11 @@ var actualizarEstado = function(codigo)
 
 
 
-var notificarCliente = function(codigo)
+var notificarEntregaCliente = function(codigo)
 {
     var host = 'localhost';
     var port = PORTEBS;
-    var path = '/cliene/notificacion/'+codigo;
+    var path = '/cliente/notificacion/'+codigo;
 
     var options = 
     {
@@ -110,7 +110,7 @@ var notificarCliente = function(codigo)
         }
         else
         {
-            console.error('Peticion HTTP hacia el cliente exitosa\t'+body);            
+            console.error('Peticion HTTP hacia el cliente exitosa\t');            
         }
     });
 }

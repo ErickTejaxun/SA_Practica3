@@ -19,8 +19,8 @@ var contadorPedido = 0;
 var avisarRepartidor = function(codigo)
 {
     var host = 'localhost';
-    var port = PORTREPARTIDOR;
-    var path = '/pedido/recoger';
+    var port = PORTEBS;
+    var path = '/repartidor/pedido/recoger';
 
     var options = 
     {
@@ -43,7 +43,7 @@ var avisarRepartidor = function(codigo)
         }
         else
         {
-            console.error('Peticion HTTP exitosa\t'+err);
+            console.error('Peticion HTTP exitosa\t');
             console.log(body);
         }
     });
