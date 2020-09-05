@@ -7,8 +7,9 @@ const { resolve } = require('path');
 
 const app = express();
 var PORTRESTAURANTE = 5000;
-var PORTREPARTIDOR = 5500;
-var PORTCLIENTE = 5800;
+var PORTREPARTIDOR  = 5600;
+var PORTCLIENTE     = 5800;
+var PORTEBS         = 6000;
 var pedidos = [];
 
 
@@ -167,11 +168,11 @@ var actualizarEstado = function(codigo)
 
 
 
-var entregar = function(codigo)
+var enviarPedidoRestaurante = function(codigo)
 {
     var host = 'localhost';
-    var port = PORTRESTAURANTE;
-    var path = '/pedido/'+codigo;
+    var port = PORTEBS;
+    var path = '/restaurante/pedido/'+codigo;
 
     var options = 
     {
@@ -204,7 +205,7 @@ var entregar = function(codigo)
 app.get('/pedido/:codigo', (req, res)=>
 {
     var codigo = req.params.codigo;
-    entregar(codigo);
+    enviarPedidoRestaurante(codigo);
     var mensaje = "Se ha comenzado su pedido\n";
     console.log(mensaje);
     res.send(mensaje);
@@ -214,7 +215,7 @@ app.get('/pedido/:codigo', (req, res)=>
 app.get('/pedido/notificacion/:codigo', (req, res)=>
 {
     var codigo = req.params.codigo;
-    //entregar(codigo);
+    //enviarPedidoRestaurante(codigo);
     var mensaje = "\n---------------------\nConfirmación de pedido " + codigo+ " recibido.\n---------------------\n";
     console.log(mensaje);
     res.send(mensaje);

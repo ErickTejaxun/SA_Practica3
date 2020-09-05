@@ -7,8 +7,9 @@ const { resolve } = require('path');
 
 const app = express();
 var PORTRESTAURANTE = 5000;
-var PORTREPARTIDOR = 5500;
-var PORTCLIENTE = 5800;
+var PORTREPARTIDOR  = 5600;
+var PORTCLIENTE     = 5800;
+var PORTEBS         = 6000;
 
 var pedidos = [];
 
@@ -85,8 +86,8 @@ var actualizarEstado = function(codigo)
 var notificarCliente = function(codigo)
 {
     var host = 'localhost';
-    var port = PORTCLIENTE;
-    var path = '/pedido/notificacion/'+codigo;
+    var port = PORTEBS;
+    var path = '/cliene/notificacion/'+codigo;
 
     var options = 
     {
@@ -112,7 +113,6 @@ var notificarCliente = function(codigo)
             console.error('Peticion HTTP hacia el cliente exitosa\t'+body);            
         }
     });
-
 }
 
 
