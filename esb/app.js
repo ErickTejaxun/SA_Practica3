@@ -310,21 +310,6 @@ app.get('/restaurante/pedido/status/close/:codigo', async (req,res)=>
 
 
 
-//var path = '/pedido/recoger';
-app.post('/pedido/recoger', (req, res)=>
-{
-    var codigo = req.params.codigo; 
-    pedidos.push(codigo);
-    var mensaje = '***********Se le ha notificado al repartidor que puede recoger el pedido. Código: '+codigo + '************';    
-    console.log(mensaje);    
-    console.log('Lista de pedidos\t'+pedidos);
-    res.send(mensaje); 
-    simularEntregaPedidos(codigo);
-});
-
-
-
-
 //app.listen(process.env.PORTRESTAURANTE, ()=>)
 app.listen(PORTEBS,()=>
 {
